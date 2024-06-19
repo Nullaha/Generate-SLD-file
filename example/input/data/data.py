@@ -1,35 +1,8 @@
-
-## 使用
-
-修改 example/input 中的内容，然后运行 run.py  
-
-example/input/data.py中保存的是数据。
-
-如果是图片的点样式，需要将图片放到example/input/img/对应路径下。
+def rgb_to_hex(r, g, b):
+    return f"#{r:02x}{g:02x}{b:02x}".upper()
 
 
-## 介绍
-
-生成几种简单的sld样式
-
-|TODO | 类型 | 名称 | 说明 |
-|-----| ---- | ---- | ---- |
-|  | 线 | line-simple | 简单的线 |
-|  | 线 | line-filter | 字段等于A是A样式，字段等于B是B样式 |
-|  | 线 | line-dasharray | 虚线 |
-|  | 线 | line-multi | 两条线叠一起用 |
-|  | 面 | polygon-nostroke | 只有填充色，没有边界线 |
-|  | 面 | polygon-fill-slash | 几种填充 |
-|  | 面 | polygon-stroke |有填充色，也有边界线 |
-|  | 面 | polygon-filter | 字段等于A是A样式，字段等于B是B样式 |
-|  | 点 | point-base64 | 是图片的点样式 |
-| TODO | 点 | point-? |其它简单的点样式这里暂时没有 |
-
-
-
-## line-simple 
-
-```py
+configs = [
     # line-simple: 不需要判断字段：1个rule，一条实线
     {
     "dir":"example/line-simple",
@@ -55,15 +28,9 @@ example/input/data.py中保存的是数据。
             ]
         }
     ]
-    }
-```
-
-![line-simple](./docs/snapshot/line-simple.png)
-
-## line-filter 
-
-```py
- { # 需要判断字段：多个rule
+    },
+    # line-filter: 判断字段
+    { # 需要判断字段：多个rule
    "dir":"example/line-filter",
     "layer_name": "高速铁路",
     "rules": [
@@ -107,11 +74,12 @@ example/input/data.py中保存的是数据。
         },
     ]
 },
-```
 
-## line-dasharray 
-
-```py
+    # line-dasharray:虚线
+    # 各种各样的虚线：数重复：
+# 比如 —— —— . . —— —— . .  
+# 重复 —— —— . . 那么——20, 空格6, ——20, 空格6, .1, 空格6, .1, 空格6
+# "dasharray":"20 6 20 6 1 6 1 6"
 {
    "dir":"example/line-dasharray",
     "layer_name": "高速铁路",
@@ -133,12 +101,7 @@ example/input/data.py中保存的是数据。
         }
     ]
 },
-```
-![line-simple](./docs/snapshot/line-dasharray.png)
-
-## line-multi 
-
-```py
+# line-multi:
 {# 两条不同颜色的线：多个symbolizer，先写粗的再写细的，虚线加dasharray
    "dir":"example/line-multi",
     "layer_name": "高速铁路",
@@ -168,13 +131,33 @@ example/input/data.py中保存的是数据。
         }
     ]
 },
-```
-![line-simple](./docs/snapshot/line-multi.png)
 
-## polygon-nostroke 
+  # point-base64:
+  {
+  "dir":"example/point-base64",
+   "layer_name": "矿山",
+   "rules": [
+       {
+           "name": "地下水",
+           "type": "point",
+        #    "filter": {
+        #      "name": "矿种名称",
+        #      "value": "地下水",
+        #    },
+           "symbolizer": {
+               "size":"10",
+               "base64":""
 
-```py
- {
+           },
+       }, 
+        
+   ],
+   
+},
+
+
+  # polygon-nostroke:
+  {
     "dir": "example/polygon-nostroke",
     "layer_name": "水库工程",
     "rules": [
@@ -190,14 +173,8 @@ example/input/data.py中保存的是数据。
      
     ]
 },
-```
-
-![polygon-nostroke](./docs/snapshot/polygon-nostroke.png)
-
-## polygon-stroke 
-
-```py
- {
+  # polygon-stroke:
+  {
     "dir": "example/polygon-stroke",
     "layer_name": "水库工程",
     "rules": [
@@ -217,13 +194,7 @@ example/input/data.py中保存的是数据。
      
     ]
 },
-```
-
-![polygon-stroke](./docs/snapshot/polygon-stroke.png)
-
-## polygon-filter 
-
-```py
+  # polygon-filter
   {
     "dir": "example/polygon-filter",
     "layer_name": "水库工程",
@@ -260,11 +231,16 @@ example/input/data.py中保存的是数据。
         },
     ]
 },
-```
+  
+  # polygon-fill-slash
+  # shape://vertline A vertical line (suitable for hatch fills or to make railroad symbols)
+  # shape://horline  A horizontal line (suitable for hatch fills)
+  # shape://slash A diagonal line leaning forwards like the “slash” keyboard symbol (suitable for diagonal hatches)
+  # shape://backslash Same as shape://slash, but oriented in the opposite direction
+  # shape://dot A very small circle with space around
+  # shape://plus A + symbol, without space around (suitable for cross-hatch fills)
+  # shape://times A “X” symbol, without space around (suitable for cross-hatch fills)
 
-## polygon-fill-slash 
-
-```py
   {
     "dir": "example/polygon-fill-slash",
     "layer_name": "水库工程",
@@ -288,35 +264,8 @@ example/input/data.py中保存的是数据。
     ]
 },
 
-```
 
-![polygon-fill-slash](./docs/snapshot/polygon-fill-slash.png)
 
-## point-base64
 
-```py
-  {
-  "dir":"example/point-base64",
-   "layer_name": "矿山",
-   "rules": [
-       {
-           "name": "地下水",
-           "type": "point",
-          #  "filter": {
-          #    "name": "矿种名称",
-          #    "value": "地下水",
-          #  },
-           "symbolizer": {
-               "size":"10",
-               "base64":""
 
-           },
-       }, 
-        
-   ],
-   
-}
-```
-
-![point-base64](./docs/snapshot/point-base64.png)
-
+]
